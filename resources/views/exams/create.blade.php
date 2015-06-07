@@ -50,6 +50,22 @@
     <script src="{{asset('/js/ace/ace.js')}}" type="text/javascript" charset="utf-8"></script>
     <script src="{{asset('/js/ace/ext-language_tools.js') }}" type="text/javascript" charset="utf-8"></script>
     <script>
+        window.onbeforeunload = function (e) {
+            e = e || window.event;
+
+            // For IE and Firefox prior to version 4
+            if (e) {
+                e.returnValue = 'Sure?';
+            }
+
+            // For Safari
+            return 'Sure?';
+        };
+    </script>
+    <script>
+
+
+
         var code ;
         var editor = ace.edit("editor");
 
@@ -60,6 +76,18 @@
         editor.setHighlightActiveLine(true);
         editor.setShowPrintMargin(false);
 
+        $('#subCode').click(function(e) {
+            var value = editor.getValue();
+            if ((value == "")) {
+                return false;
+            }else{
+                if (confirm("You Sure to Submit Code ?? It Cannot be Edited Again") == true) {
+                    {{--code = value;--}}
+                    {{--var token = $('#codeEditorToken').val();--}}
+                    {{--var formData = {'_token': token,'code': code,'question_code':{{ $question->id }},'exam_id': '{{ $question->id }}' };--}}
+                }
+            }
+        });
 //        document.getElementById('editor').style.fontSize='14px';
 
         $('#exeCode').click(function(e) {

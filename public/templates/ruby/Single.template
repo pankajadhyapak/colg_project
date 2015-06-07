@@ -1,0 +1,20 @@
+{{ code }}
+
+input={{ inputArray }}
+
+output= {{ outPutArray }}
+
+out = ""
+
+for i in 0..4
+	if solution(input[i]) == output[i]
+		v = i+1
+		out << (v.to_s)
+		out << ","
+
+	end
+
+end
+
+
+puts out

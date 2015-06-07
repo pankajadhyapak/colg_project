@@ -1,0 +1,21 @@
+# you can use print for debugging purposes, e.g.
+# print &quot;this is a debug message&quot;
+
+def solution(A)
+    # write your code in Python 2.7
+    pass
+
+input=
+
+output= 
+
+out = ""
+
+for index in range(len(input)):
+	
+	if solution(input[index]) == output[index]:
+		out += str(index+1)
+		out += ","
+	
+print out
+		

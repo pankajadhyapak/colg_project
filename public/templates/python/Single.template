@@ -1,0 +1,16 @@
+{{ code }}
+
+input={{ inputArray }}
+
+output= {{ outPutArray }}
+
+out = ""
+
+for index in range(len(input)):
+	
+	if solution(input[index]) == output[index]:
+		out += str(index+1)
+		out += ","
+	
+print out
+		

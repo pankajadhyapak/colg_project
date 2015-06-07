@@ -13,8 +13,10 @@ class Execute {
 
         switch($lang) {
             case "php": return $this->prepareForPhp();
-            case "java": return $this->prepareForPhp();
+            case "java": return $this->prepareForJava();
+            case "python": return $this->prepareForPython();
             case "c": return $this->prepareForC();
+            case "ruby": return $this->prepareForRuby();
         }
     }
 
@@ -63,7 +65,7 @@ class Execute {
 		//return $this->testFormat($result);
         //update results
 		if($result['return'] == 0 && $result['stderr'] == ""){
-			return $this->formatHtml($result['stdout']);
+			return $this->formatHtml($result['stdout'],$examObj->testCases->count());
 		}
 		if($result['return'] == 0 && $result['stderr'] != ""){
 			return $this->ErrorFormat($result['stderr']);
@@ -73,6 +75,164 @@ class Execute {
 			return $this->ErrorFormat($result['stderr']);
 		}
         
+    }
+
+    public function prepareForPython()
+    {
+
+
+        //generate Random String
+        $fileName = \Illuminate\Support\Str::random(10);
+
+        $filePath = public_path() . '/files/' . $fileName . '.py';
+        $code = \Request::get('code');
+
+        $mustache = new \Mustache_Engine();
+
+        $examObj = \App\Question::find(\Request::get('question_code'));
+
+        $inputArray = $examObj->testCases->lists('input');
+        $outPutArray = $examObj->testCases->lists('output');
+
+        $tem = $mustache->render(file_get_contents(public_path() . "/templates/python/Single.template"), [
+            'code' => $code,
+            'inputArray' => '[' . implode(",", $inputArray) . ']',
+            'outPutArray' => '[' . implode(",", $outPutArray) . ']'
+        ]);
+
+        file_put_contents($filePath, $tem);
+
+        //execute program
+        $result = $this->execute('python ' .$filePath);
+        //return $result['stdout'];
+        //delete Files
+
+        unlink($filePath);
+        //return $this->testFormat($result);
+        //update results
+        if($result['return'] == 0 && $result['stderr'] == ""){
+            return $this->formatHtml($result['stdout'], $examObj->testCases->count());
+        }
+        if($result['return'] == 0 && $result['stderr'] != ""){
+            return $this->ErrorFormat($result['stderr']);
+        }
+
+        if($result['return'] == 1){
+            return $this->ErrorFormat($result['stderr']);
+        }
+
+    }
+
+    public function prepareForJava()
+    {
+
+
+        //generate Random String
+        $fileName = \Illuminate\Support\Str::random(10);
+
+        $filePath = public_path() . '/files/' . $fileName . '.java';
+        $code = \Request::get('code');
+
+        $mustache = new \Mustache_Engine();
+
+        $examObj = \App\Question::find(\Request::get('question_code'));
+
+        $inputArray = $examObj->testCases->lists('input');
+        $outPutArray = $examObj->testCases->lists('output');
+
+        $tem = $mustache->render(file_get_contents(public_path() . "/templates/java/Single.template"), [
+            'fileName' => $fileName,
+            'code' => $code,
+            'inputArray' => '{' . implode(",", $inputArray) . '}',
+            'outPutArray' => '{' . implode(",", $outPutArray) . '}'
+        ]);
+
+        file_put_contents($filePath, $tem);
+
+        //execute program
+        $result = $this->execute('javac ' .$filePath);
+
+        //return var_dump($result);
+        //return $result['stdout'];
+        //delete Files
+        unlink($filePath);
+
+        //return $this->testFormat($result);
+        //update results
+
+        if($result['return'] == 0 && $result['stderr'] == ""){
+
+            $result = $this->execute('java -cp '.public_path().'/files/ '.$fileName);
+
+            if($result['return'] == 0 && $result['stderr'] == ""){
+                return $this->formatHtml($result['stdout'], $examObj->testCases->count());
+            }
+            if($result['return'] == 0 && $result['stderr'] != ""){
+                return $this->ErrorFormat($result['stderr']);
+            }
+
+            if($result['return'] == 255){
+                return $this->ErrorFormat($result['stderr']);
+            }
+        }
+        if($result['return'] == 0 && $result['stderr'] == ""){
+            return $this->formatHtml($result['stdout'], $examObj->testCases->count());
+        }
+        if($result['return'] == 0 && $result['stderr'] != ""){
+            return $this->ErrorFormat($result['stderr']);
+        }
+
+        if($result['return'] == 1){
+            return $this->ErrorFormat($result['stderr']);
+        }
+
+    }
+
+    public function prepareForRuby()
+    {
+
+
+        //generate Random String
+        $fileName = \Illuminate\Support\Str::random(10);
+
+        $filePath = public_path() . '/files/' . $fileName . '.rb';
+        $code = \Request::get('code');
+
+        $mustache = new \Mustache_Engine();
+
+        $examObj = \App\Question::find(\Request::get('question_code'));
+
+        $inputArray = $examObj->testCases->lists('input');
+        $outPutArray = $examObj->testCases->lists('output');
+
+        $tem = $mustache->render(file_get_contents(public_path() . "/templates/ruby/Single.template"), [
+            'code' => $code,
+            'inputArray' => '[' . implode(",", $inputArray) . ']',
+            'outPutArray' => '[' . implode(",", $outPutArray) . ']'
+        ]);
+
+        file_put_contents($filePath, $tem);
+
+        //execute program
+        $result = $this->execute('ruby ' .$filePath);
+        //return $result['stdout'];
+        //delete Files
+        unlink($filePath);
+        //unlink($ContainerPath);
+
+        //return $this->testFormat($result);
+        //update results
+        if($result['return'] == 0 && $result['stderr'] == ""){
+            return $this->formatHtml($result['stdout'], $examObj->testCases->count());
+        }
+        if($result['return'] == 0 && $result['stderr'] != ""){
+            return $this->ErrorFormat($result['stderr']);
+        }
+
+        if($result['return'] == 1){
+            return $this->ErrorFormat($result['stderr']);
+        }
+
     }
 	
 	public function ErrorFormat($str){
@@ -88,25 +248,23 @@ class Execute {
 		return $a;
 	}
 
-    public function formatHtml($str){
+    public function formatHtml($str,$totalTestCases){
+
         $res = explode(",",$str);
+        array_pop($res);
+
         $o = "";
 		$resString[] = "";
-		
-		for($i=0;$i<5;$i++){
-			$caseNo = $i+1;
-			
-			if(sizeof($res) > $i){
-				$check = $res[$i];
+
+        for($i=1;$i<=$totalTestCases;$i++){
+            if(in_array($i, $res)){
+				$resString[$i] = "<span class='success'>Case $i Success</span>";
 			}else{
-				$check = 0;
+				$resString[$i] = "<span class='error'>Case $i Failed</span>";
 			}
-			if($check == $caseNo){
-				$resString[$i] = "<span class='success'>Case $caseNo Success</span>";
-			}else{
-				$resString[$i] = "<span class='error'>Case $caseNo Failed</span>";
-			}
-		}
+
+        }
+
         foreach($resString as $r){
             $o.= $r . "<br/>";
         }

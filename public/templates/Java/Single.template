@@ -1,0 +1,27 @@
+{{ code }}
+public class {{ fileName }} {
+
+	public static void main(String[] args) {
+		Solution s = new Solution();
+
+		String out = "";
+
+        int[] input={{ inputArray }};
+
+        int[] output= {{ outPutArray }};
+
+          // Print all the array elements
+          for (int i = 0; i < input.length; i++) {
+             if(s.solution(input[i]) == output[i]){
+                out = out.concat(Integer.toString(i+1));
+                out = out.concat(",");
+             }
+          }
+
+            System.out.print(out);
+
+	}
+
+
+
+}

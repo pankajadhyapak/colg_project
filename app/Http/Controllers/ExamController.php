@@ -27,14 +27,14 @@ class ExamController extends Controller {
 	public function create()
 	{
 
-		if($excode = Input::has('exam_code')){
+		if($excode = Input::has('exam_code') && \Auth::check()){
 			if($question = Question::where('exam_code', Input::get('exam_code'))->firstOrFail()){
 				$template = \Template::get($question->language);
 				return view('exams.create', compact('question','template'));
 			}
 
 		}else{
-			return response('Unauthorized.', 401);
+			return redirect('/auth/login');
 		}
 
 	}
