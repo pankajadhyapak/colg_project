@@ -1,0 +1,20 @@
+<?php
+
+
+require "{{ fileName }}.php";
+
+$inp = {{ inputArray }};
+
+$out = {{ outPutArray }};
+
+$result ="";
+
+for($i=0;$i<count($inp);$i++){
+    if(solution($inp[$i]) == $out[$i]){
+        $result .= $i+1;
+                $result .=",";
+    }
+}
+
+echo $result;
+

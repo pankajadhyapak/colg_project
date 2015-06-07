@@ -1,0 +1,27 @@
+#include <stdio.h>
+ 
+int main ()
+{
+   int input[5] = {{ inputArray}};
+   int output[5] = {{ outPutArray}};
+   int i,error = 0;
+
+
+
+   for ( i = 0; i < 5; i++ )
+   {
+      if(output[i] == solution(input[i])){
+        error = error+1;
+      }
+   }
+
+
+   printf("%d",error);
+
+}
+
+ int solution(int a) {
+     // write your code in C99
+
+     return a+10;
+ }
