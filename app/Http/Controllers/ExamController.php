@@ -4,6 +4,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Question;
+use App\Exam;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 
@@ -26,13 +27,25 @@ class ExamController extends Controller {
 	 */
 	public function create()
 	{
-
-		if($excode = Input::has('exam_code') && \Auth::check()){
-			if($question = Question::where('exam_code', Input::get('exam_code'))->firstOrFail()){
-				$template = \Template::get($question->language);
-				return view('exams.create', compact('question','template'));
+		
+		if( \Auth::check()){
+			
+			if($excode = Input::has('exam_code')){
+				if($question = Question::where('exam_code', Input::get('exam_code'))->firstOrFail()){
+					$template = \Template::get($question->language);
+					$student = true;
+					return view('exams.create', compact('question','template','student'));
+				}
 			}
-
+			
+			if($excode = Input::has('eval_code')){
+				if($question = Exam::where('exam_code', Input::get('eval_code'))->firstOrFail()){
+					$template = \Template::get($question->language);
+					$student = false;
+					return view('exams.create', compact('question','template','student'));
+				}
+			}
+			
 		}else{
 			return redirect('/auth/login');
 		}

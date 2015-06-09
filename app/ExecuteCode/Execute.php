@@ -61,7 +61,6 @@ class Execute {
         //delete Files
         unlink($filePath);
         unlink($ContainerPath);
-
 		//return $this->testFormat($result);
         //update results
 		if($result['return'] == 0 && $result['stderr'] == ""){
@@ -219,7 +218,7 @@ class Execute {
         //delete Files
         unlink($filePath);
         //unlink($ContainerPath);
-
+		
         //return $this->testFormat($result);
         //update results
         if($result['return'] == 0 && $result['stderr'] == ""){
@@ -252,7 +251,8 @@ class Execute {
 
         $res = explode(",",$str);
         array_pop($res);
-
+		
+		\Session::put(\Auth::id()."testCases", count($res));
         $o = "";
 		$resString[] = "";
 

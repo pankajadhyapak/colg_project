@@ -30,7 +30,9 @@
 
                 <div class="btnactions">
                     <a class="btn btn-small btn-info" id="exeCode"><i class="fa fa-code"></i>Execute Code</a>
+					@if($student)
                     <a class="btn btn-small btn-success" id="subCode" href="#"><i class="fa fa-share"></i></i>Submit Code </a>
+					@endif
                     <a class="btn btn-small btn-danger" id="quitCode" href="#"><i class="fa fa-times"></i></i>Quit </a>
                 </div>
                     </form>
